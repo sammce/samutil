@@ -1,7 +1,7 @@
 from time import perf_counter
 from typing import Callable
 
-from .formatter import Formatter
+from .formatting import Formatter
 
 
 class UnitTester():
