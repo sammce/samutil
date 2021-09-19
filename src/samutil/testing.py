@@ -108,7 +108,8 @@ class _Expects(Formatter):
         comparison_operand = self._info["comparison_operand"]
         failed_operand = self._info["failed_operand"]
         kwargs = self._info["kwargs"]
-        args = list(map(lambda x: str(x), list(self._info["args"])))
+        # Stringify each 
+        args = tuple(map(lambda x: str(x), tuple(self._info["args"])))
 
         # For each arg and kwarg, make it bold and put a separating comma ',' between them
         arguments = ", ".join(list(map(lambda val: self.bold(
