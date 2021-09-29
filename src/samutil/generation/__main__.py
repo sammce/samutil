@@ -1,4 +1,4 @@
-from formatting import Formatter
+from formatting.__main__ import Formatter
 
 formatter = Formatter()
 
