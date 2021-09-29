@@ -20,12 +20,15 @@ setup (
  name = 'samutil',
  description = 'A set of Python utility packages for developing and maintaining quality software.',
  version = '0.0.62',
- packages = find_packages(), # list of all packages
+ packages=find_packages(
+        where='src',
+    ),
+ package_dir={"": "src"},
  install_requires = install_requires,
- python_requires='>=3', # any python greater than 2.7
+ python_requires='>=3',
  entry_points='''
         [console_scripts]
-        samutil test=testing.__main__:main
+        samutil=samutil.__main__:main
     ''',
  author="Sam McElligott",
  keyword="testing, formatting, secore, generation, utility",
@@ -40,5 +43,6 @@ setup (
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
-    ]
+    ],
+    
 )
