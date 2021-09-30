@@ -18,12 +18,20 @@ def expect(*args):
     def deco(func: Callable) -> Callable:
         comparison = args[0]
         if not hasattr(func, "_tests"):
-            func._tests = []
+            func._tests = [[]]
 
         if not isinstance(comparison, BaseComparison):
             comparison = ShouldEqual(comparison)
 
-        func._tests.append([comparison])
+        index = 0
+        if hasattr(func, "_test_index"):
+            index = func._test_index
+
+        try:
+            func._tests[index].append(comparison)
+        except IndexError:
+            func._tests.append([comparison])
+
         return func
     return deco
 
@@ -35,8 +43,13 @@ def case(*args, **kwargs) -> Callable:
         if not hasattr(func, "_tests"):
             raise ValueError(f"@case called on function {func.__name__} without an @expect call")
 
-        comparison = func._tests[-1][-1]
-        func._tests[-1][-1] = make_lazy_run_test(*args, comparison=comparison, **kwargs)
+        index = 0
+        if hasattr(func, "_test_index"):
+            index = func._test_index
+
+        comparison = func._tests[index][-1]
+        del func._tests[index][-1]
+        func._tests[index].append(make_lazy_run_test(*args, comparison=comparison, **kwargs))
         return func
     return deco
 
@@ -55,6 +68,11 @@ def test(*args):
 
         test = UnitTest(func, name)
         this_suite = 0
+
+        if not hasattr(func, "_test_index"):
+            func._test_index = 1
+        else:
+            func._test_index += 1
 
         has_tests = hasattr(func, "_run_tests")
 

@@ -83,14 +83,14 @@ class ComparisonRunner:
                 print(f.success(f"      Expected: {type(comparison.expected).__name__} ({comparison.expected})"))
                 print(f.error(f"      Received: {type(comparison.result).__name__} ({comparison.result})"))
 
-            time_taken != 0 and print(f.magenta(f"\n  Execution time:", f.bold(time_taken, time_unit)))
+            time_taken != 0 and print(f.magenta(f"\n  Execution time:", f.bold(time_taken, time_unit))+"\n")
         else:
             print(f.success("    - PASS -"))
             if not comparison.same_type:
                 print(f.warning(f"\n    Warning: expected and received values had different types."))
                 print(f.success(f"      Expected: {type(comparison.expected).__name__} ({comparison.expected})"))
                 print(f.error(f"      Received: {type(comparison.result).__name__} ({comparison.result})\n"))
-            time_taken != 0 and print(f.magenta(f"  Execution time:", f.bold(time_taken, time_unit)))
+            time_taken != 0 and print(f.magenta(f"  Execution time:", f.bold(time_taken, time_unit))+"\n")
 
     def should_equal(self, expected: Value):
         """
