@@ -1,13 +1,10 @@
-import sys
 from os import path
 
 import click
 from click.types import Path
 
 from formatting import Formatter
-from testing import _test_dir as test_dir
-from testing import _test_file as test_file
-from testing import _test_non_test_file as test_non_test_file
+from testing.utils import test_dir, test_file
 
 f = Formatter()
 
@@ -26,13 +23,11 @@ def test(filenames: tuple[Path]):
     else:
         for file in filenames:
             filename = click.format_filename(file)
+
             if path.isdir(filename):
                 test_dir(filename)
-            elif path.isfile(filename):
-                if filename.endswith(".test.py"):
-                    test_file(filename)
-                elif filename.endswith(".py"):
-                    test_non_test_file(filename)
+            elif path.isfile(filename) and filename.endswith(".py"):
+                test_file(filename)
             else:
                 click.echo(f.info("Skipping", str(file), "as it is not a directory or valid test file."))
 

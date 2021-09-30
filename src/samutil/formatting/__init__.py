@@ -67,7 +67,8 @@ class Formatter:
     if platform == "win32":
         system("color")
 
-    def _concat(self, strings: Iterable[str], code: str = "", sep: str = " ") -> str:
+    @staticmethod
+    def _concat(strings: Iterable[str], code: str = "", sep: str = " ") -> str:
         """
         Helper function for concatenating multiple arguments passed
         to any Formatter methods properly.
@@ -93,52 +94,59 @@ class Formatter:
 
         return combined_strings
 
-    def info(self, *strings: str, sep=" ") -> str:
+    @staticmethod
+    def info(*strings: str, sep=" ") -> str:
         """
         Return `strings` as 1 Cyan colored string, separated by `sep`
         """
-        text = self._concat(strings, ColorCodes.CYAN, sep)
+        text = Formatter._concat(strings, ColorCodes.CYAN, sep)
         return ColoredText(ColorCodes.CYAN, text)
 
-    def success(self, *strings: str, sep=" ") -> str:
+    @staticmethod
+    def success(*strings: str, sep=" ") -> str:
         """
         Return `strings` as 1 Green colored string, separated by `sep`
         """
-        text = self._concat(strings, ColorCodes.GREEN, sep)
+        text = Formatter._concat(strings, ColorCodes.GREEN, sep)
         return ColoredText(ColorCodes.GREEN, text)
 
-    def warning(self, *strings: str, sep=" ") -> str:
+    @staticmethod
+    def warning(*strings: str, sep=" ") -> str:
         """
         Return `strings` as 1 Yellow colored string, separated by `sep`
         """
 
-        text = self._concat(strings, ColorCodes.YELLOW, sep)
+        text = Formatter._concat(strings, ColorCodes.YELLOW, sep)
         return ColoredText(ColorCodes.YELLOW, text)
 
-    def error(self, *strings: str, sep=" ") -> str:
+    @staticmethod
+    def error(*strings: str, sep=" ") -> str:
         """
         Return `strings` as 1 Red colored string, separated by `sep`
         """
-        text = self._concat(strings, ColorCodes.RED, sep)
+        text = Formatter._concat(strings, ColorCodes.RED, sep)
         return ColoredText(ColorCodes.RED, text)
 
-    def magenta(self, *strings: str, sep=" ") -> str:
+    @staticmethod
+    def magenta(*strings: str, sep=" ") -> str:
         """
         Return `strings` as 1 Magenta colored string, separated by `sep`
         """
-        text = self._concat(strings, ColorCodes.MAGENTA, sep)
+        text = Formatter._concat(strings, ColorCodes.MAGENTA, sep)
         return ColoredText(ColorCodes.MAGENTA, text)
 
-    def bold(self, *strings: str, sep=" ") -> str:
+    @staticmethod
+    def bold(*strings: str, sep=" ") -> str:
         """
         Return `strings` as 1 Bold string, separated by `sep`
         """
-        text = self._concat(strings, ColorCodes.BOLD, sep)
+        text = Formatter._concat(strings, ColorCodes.BOLD, sep)
         return ColoredText(ColorCodes.BOLD, text)
 
-    def underline(self, *strings: str, sep=" ") -> str:
+    @staticmethod
+    def underline(*strings: str, sep=" ") -> str:
         """
         Return `strings` as 1 Underlined string, separated by `sep`
         """
-        text = self._concat(strings, ColorCodes.UNDERLINE, sep)
+        text = Formatter._concat(strings, ColorCodes.UNDERLINE, sep)
         return ColoredText(ColorCodes.UNDERLINE, text)
