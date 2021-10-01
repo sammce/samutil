@@ -7,7 +7,6 @@ class ColorCodes:
     """
     A class representation of the color codes used by `samutil.Formatter`
     """
-
     CYAN = "\033[96m"
     WHITE = "\033[97m"
     MAGENTA = "\033[95m"

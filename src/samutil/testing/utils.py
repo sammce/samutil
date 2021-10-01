@@ -1,7 +1,7 @@
 import os
 from importlib import import_module
 from time import perf_counter
-from types import ModuleType
+from types import FunctionType, ModuleType
 from typing import Callable, Tuple
 
 import click
@@ -17,16 +17,19 @@ def call_if_callable(obj: object, *args, **kwargs) -> Tuple[Value, float]:
     if it can be called, with performance metrics.
     """
     if callable(obj):
-        t1 = perf_counter()
-        response = obj(*args, **kwargs)
-        t2 = perf_counter()
-
-        return response, t2 - t1
+        if getattr(obj, "_is_class", False) and (not isinstance(obj, FunctionType)):
+            response = obj(obj._parent(), *args, **kwargs)
+        else:
+            response = obj(*args, **kwargs)
+        return response
     else:
         return obj, 0
 
 def output_case_args(test_subject: TestSubject, *args, **kwargs):
-    formatted_kwargs = ", ".join([k + "=" + v for k, v in kwargs.items()])
+    """
+    Take a test subject and all of the test's arguments and output it nicely.
+    """
+    formatted_kwargs = [f"{k}={v}" for (k, v) in kwargs.items()]
     args = tuple(map(str, args))
     formatted_args = ", ".join([*args, *formatted_kwargs])
     formatted_output = f.bold(test_subject.__name__ + "(" + formatted_args + ")")
@@ -34,7 +37,6 @@ def output_case_args(test_subject: TestSubject, *args, **kwargs):
 
 def lazy_run_test(test, *args, comparison, **kwargs) -> Callable:
     case = test.with_args(*args, **kwargs)
-    # output_case_args(test._test_subject, *args, **kwargs)
 
     return lambda: case.should(comparison)
 
@@ -64,7 +66,6 @@ def module_funcs(module: ModuleType):
     for func in module.__dict__.items():
         yield func
 
-
 def test_file(filename: str):
     """
     Dynamically import a python file and check for functions declared with @case and @test
@@ -81,6 +82,11 @@ def test_file(filename: str):
 
     del module
 
+def test_test_file(filename: str):
+     with open(filename) as f:
+         code = compile(f.read(), filename, 'exec')
+         exec(code, globals(), locals())
+
 def test_dir(dir: Path):
     dirname = click.format_filename(dir)
     for file in os.listdir(dirname):
@@ -90,4 +96,7 @@ def test_dir(dir: Path):
             test_dir(filename)
         elif os.path.isfile(filename):
             if filename.endswith(".py"):
-                test_file(filename)
+                if filename.endswith(".test.py"):
+                    test_test_file(filename)
+                else: 
+                    test_file(filename)
