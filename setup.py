@@ -24,7 +24,7 @@ setup(
     python_requires=">=3",
     entry_points="""
         [console_scripts]
-        samutil=.__cli__:main
+        samutil=__cli__:main
     """,
     author="Sam McElligott",
     keyword="testing, unittesting, formatting, secure, generation, utility",
