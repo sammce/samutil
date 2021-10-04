@@ -18,7 +18,7 @@ setup(
     name="samutil",
     description="A set of Python utility packages for developing and maintaining quality software.",
     version="0.0.70",
-    packages=["samutil"],
+    packages=["samutil.testing", "samutil.formatting", "samutil.generation"],
     package_dir={"": "src"},
     install_requires=["click", "sigfig", "sortedcontainers"],
     python_requires=">=3",
