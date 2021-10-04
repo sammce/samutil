@@ -19,12 +19,15 @@ class BaseComparison:
     def __init__(self, expected: Value):
         self.expected = expected
 
-        
     def compare(self, expected: Value, result: Value) -> bool:
         """
         If compare has not been implemented by a child class, raise an error
         """
-        raise AttributeError(f.error(f"Custom comparison implementation '{self.__name__}' must implement a 'compare' method."))
+        raise AttributeError(
+            f.error(
+                f"Custom comparison implementation '{self.__name__}' must implement a 'compare' method."
+            )
+        )
 
 
 class EqualTo(BaseComparison):
@@ -33,6 +36,7 @@ class EqualTo(BaseComparison):
 
     def compare(self, result, expected):
         return result == expected
+
 
 def Not(comp: BaseComparison):
     """
@@ -45,12 +49,41 @@ def Not(comp: BaseComparison):
         comp._not = True
     return comp
 
-class ToHaveType(BaseComparison):
+
+class ListEqual(EqualTo):
+    def compare(self, result, expected):
+        if not isinstance(result, (list, tuple)):
+            return False
+
+        for result_val, expected_val in zip(result, expected):
+            if result_val != expected_val:
+                return False
+
+        return True
+
+
+class DictEqual(EqualTo):
+    def compare(self, result: dict, expected: dict):
+        if not isinstance(result, dict):
+            return False
+
+        for result_val, expect_val in zip(result.values(), expected.values()):
+            if isinstance(result_val, dict):
+                if not self.compare(result_val, expect_val):
+                    return False
+            elif result_val != expect_val:
+                return False
+
+        return True
+
+
+class HasType(BaseComparison):
     operator = "instance of"
     negated = "not instance of"
 
     def compare(self, result, expected):
         return isinstance(result, type(expected))
+
 
 class LessThan(BaseComparison):
     operator = "<"
@@ -58,6 +91,7 @@ class LessThan(BaseComparison):
 
     def compare(self, result, expected):
         return result < expected
+
 
 class LessThanOrEqualTo(BaseComparison):
     operator = "<="
@@ -74,6 +108,7 @@ class GreaterThan(BaseComparison):
     def compare(self, result, expected):
         return result > expected
 
+
 class GreaterThanOrEqualTo(BaseComparison):
     operator = ">="
     negated = "!>="
@@ -81,12 +116,14 @@ class GreaterThanOrEqualTo(BaseComparison):
     def compare(self, result, expected):
         return result >= expected
 
+
 class ToRaise(BaseComparison):
     operator = "instance of"
     negated = "not instance of"
 
     def compare(self, result, expected):
         return isinstance(result, expected)
+
 
 class ComparisonRunner:
     def __init__(self, test_subject: TestSubject, *args, **kwargs):
@@ -102,21 +139,27 @@ class ComparisonRunner:
         # Only catch errors if the test is checking for an exception
         if isinstance(comparison, ToRaise):
             try:
-                comparison.result = call_if_callable(self._test_subject, *self._args, **self._kwargs)
+                comparison.result = call_if_callable(
+                    self._test_subject, *self._args, **self._kwargs
+                )
             except Exception as e:
                 comparison.result = e
         else:
-            comparison.result = call_if_callable(self._test_subject, *self._args, **self._kwargs)
+            comparison.result = call_if_callable(
+                self._test_subject, *self._args, **self._kwargs
+            )
 
         t2 = perf_counter()
         comparison.time_taken = t2 - t1
-
 
         comparison.passed = comparison.compare(comparison.result, comparison.expected)
 
         if comparison._not:
             comparison.passed = not comparison.passed
-            comparison.operator, comparison.negated = comparison.negated, comparison.operator
+            comparison.operator, comparison.negated = (
+                comparison.negated,
+                comparison.operator,
+            )
 
         # Check to see if result has same type as expected value,
         # If it doesn't, try to cast it.
@@ -131,13 +174,13 @@ class ComparisonRunner:
         time_taken = comparison.time_taken
 
         if time_taken > 0 and time_taken <= 0.01:
-            time_taken = time_taken * 1000 # Convert to milliseconds
+            time_taken = time_taken * 1000  # Convert to milliseconds
             time_unit = "milliseconds"
-            
+
             if time_taken <= 0.01:
-                time_taken = time_taken * 1000 # Convert to microseconds
+                time_taken = time_taken * 1000  # Convert to microseconds
                 time_unit = "microseconds"
-                
+
         time_taken = round(time_taken, sigfigs=3)
 
         if not comparison.passed:
@@ -145,22 +188,58 @@ class ComparisonRunner:
 
             print()
 
-            print(f.bold(f.error("    Received")), comparison.negated, f.success(f.bold("Expected")))
-            print(f.bold("    " + f.error(comparison.result)), comparison.negated, f.success(f.bold(comparison.expected)))
+            print(
+                f.bold(f.error("    Received")),
+                comparison.negated,
+                f.success(f.bold("Expected")),
+            )
+            print(
+                f.bold("    " + f.error(comparison.result)),
+                comparison.negated,
+                f.success(f.bold(comparison.expected)),
+            )
 
             if not comparison.same_type:
-                print(f.warning(f"\n    Warning: expected and received values had different types."))
-                print(f.success(f"      Expected: {type(comparison.expected).__name__} ({comparison.expected})"))
-                print(f.error(f"      Received: {type(comparison.result).__name__} ({comparison.result})"))
+                print(
+                    f.warning(
+                        f"\n    Warning: expected and received values had different types."
+                    )
+                )
+                print(
+                    f.success(
+                        f"      Expected: {type(comparison.expected).__name__} ({comparison.expected})"
+                    )
+                )
+                print(
+                    f.error(
+                        f"      Received: {type(comparison.result).__name__} ({comparison.result})"
+                    )
+                )
 
-            time_taken != 0 and print(f.magenta(f"\n  Execution time:", f.bold(time_taken, time_unit))+"\n")
+            time_taken != 0 and print(
+                f.magenta(f"\n  Execution time:", f.bold(time_taken, time_unit)) + "\n"
+            )
         else:
             print(f.success("    - PASS -"))
             if not comparison.same_type:
-                print(f.warning(f"\n    Warning: expected and received values had different types."))
-                print(f.success(f"      Expected: {type(comparison.expected).__name__} ({comparison.expected})"))
-                print(f.error(f"      Received: {type(comparison.result).__name__} ({comparison.result})\n"))
-            time_taken != 0 and print(f.magenta(f"  Execution time:", f.bold(time_taken, time_unit))+"\n")
+                print(
+                    f.warning(
+                        f"\n    Warning: expected and received values had different types."
+                    )
+                )
+                print(
+                    f.success(
+                        f"      Expected: {type(comparison.expected).__name__} ({comparison.expected})"
+                    )
+                )
+                print(
+                    f.error(
+                        f"      Received: {type(comparison.result).__name__} ({comparison.result})\n"
+                    )
+                )
+            time_taken != 0 and print(
+                f.magenta(f"  Execution time:", f.bold(time_taken, time_unit)) + "\n"
+            )
 
     def should_equal(self, expected: Value):
         """
@@ -192,13 +271,15 @@ class ComparisonRunner:
         """
         self._parse(self._run(GreaterThanOrEqualTo(expected)))
 
-    
-
-    def should(self, comparison: BaseComparison):
+    def should_be(self, comparison: BaseComparison):
         """
         Pass a custom comparison class which extends `BaseComparison` for use in unit test.
         """
         if not isinstance(comparison, BaseComparison):
-            raise TypeError(f.error("Argument passed to 'should' method must be a class which extends from BaseComparison, or one of the pre-defined comparison objects."))
+            raise TypeError(
+                f.error(
+                    "Argument passed to 'should' method must be a class which extends from BaseComparison, or one of the pre-defined comparison objects."
+                )
+            )
 
         self._parse(self._run(comparison))
