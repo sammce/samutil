@@ -13,7 +13,7 @@ from setuptools import find_packages, setup
 #     if ("git+" not in x) and (not x.startswith("#")) and (not x.startswith("-"))
 # ]
 # dependency_links = [x.strip().replace("git+", "") for x in all_reqs if "git+" not in x]
-
+print(find_packages(where="src"))
 setup(
     name="samutil",
     description="A set of Python utility packages for developing and maintaining quality software.",
