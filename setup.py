@@ -18,14 +18,11 @@ setup(
     name="samutil",
     description="A set of Python utility packages for developing and maintaining quality software.",
     version="0.0.70",
-    packages=find_packages(where="samutil"),
+    packages=find_packages(),
     package_dir={"": "samutil"},
     install_requires=["click", "sigfig", "sortedcontainers"],
     python_requires=">=3",
-    entry_points="""
-        [console_scripts]
-        samutil=__cli__:main
-    """,
+    entry_points={"console_scripts": "samutil=samutil.__cli__:main"},
     author="Sam McElligott",
     keyword="testing, unittesting, formatting, secure, generation, utility",
     long_description="README.md",
