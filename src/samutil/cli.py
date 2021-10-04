@@ -9,7 +9,7 @@ from samutil.testing.utils import test_dir, test_file, test_test_file
 
 
 @click.group()
-@click.version_option("0.0.62")
+@click.version_option("0.0.69")
 def main():
     """Samutil Python CLI"""
     pass
