@@ -3,9 +3,9 @@ from os import path
 import click
 from click.types import Path
 
-from formatting import Formatter as f
-from generation.core import generate_key
-from testing.utils import test_dir, test_file, test_test_file
+from samutil.formatting import Formatter as f
+from samutil.generation.core import generate_key
+from samutil.testing.utils import test_dir, test_file, test_test_file
 
 
 @click.group()

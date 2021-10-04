@@ -6,7 +6,7 @@ from typing import Callable, Tuple
 
 import click
 from click.types import Path
-from formatting import Formatter as f
+from samutil.formatting import Formatter as f
 
 from .types import TestSubject, Value
 
@@ -25,6 +25,7 @@ def call_if_callable(obj: object, *args, **kwargs) -> Tuple[Value, float]:
     else:
         return obj, 0
 
+
 def output_case_args(test_subject: TestSubject, *args, **kwargs):
     """
     Take a test subject and all of the test's arguments and output it nicely.
@@ -35,13 +36,16 @@ def output_case_args(test_subject: TestSubject, *args, **kwargs):
     formatted_output = f.bold(test_subject.__name__ + "(" + formatted_args + ")")
     print(f.info("  RUNS", f.bold(formatted_output), "\b:"))
 
+
 def lazy_run_test(test, *args, comparison, **kwargs) -> Callable:
     case = test.with_args(*args, **kwargs)
 
     return lambda: case.should(comparison)
 
+
 def make_lazy_run_test(*args, comparison, **kwargs):
     return lambda test: lazy_run_test(test, *args, comparison=comparison, **kwargs)
+
 
 def import_file(filename: str) -> ModuleType:
     """
@@ -62,15 +66,17 @@ def import_file(filename: str) -> ModuleType:
 
     return non_test_module
 
+
 def module_funcs(module: ModuleType):
     for func in module.__dict__.items():
         yield func
+
 
 def test_file(filename: str):
     """
     Dynamically import a python file and check for functions declared with @case and @test
     """
-    
+
     module = import_file(filename)
     for func in module_funcs(module):
         # func is a tuple in the form ('func_name', actual_func)
@@ -82,10 +88,12 @@ def test_file(filename: str):
 
     del module
 
+
 def test_test_file(filename: str):
-     with open(filename) as f:
-         code = compile(f.read(), filename, 'exec')
-         exec(code, globals(), locals())
+    with open(filename) as f:
+        code = compile(f.read(), filename, "exec")
+        exec(code, globals(), locals())
+
 
 def test_dir(dir: Path):
     dirname = click.format_filename(dir)
@@ -98,5 +106,5 @@ def test_dir(dir: Path):
             if filename.endswith(".py"):
                 if filename.endswith(".test.py"):
                     test_test_file(filename)
-                else: 
+                else:
                     test_file(filename)
