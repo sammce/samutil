@@ -17,10 +17,8 @@ from setuptools import find_packages, setup
 setup(
     name="samutil",
     description="A set of Python utility packages for developing and maintaining quality software.",
-    version="0.0.69",
-    packages=find_packages(
-        where="src",
-    ),
+    version="0.0.70",
+    packages=["samutil"],
     package_dir={"": "src"},
     install_requires=["click", "sigfig", "sortedcontainers"],
     python_requires=">=3",
