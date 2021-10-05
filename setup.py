@@ -3,12 +3,12 @@ from setuptools import find_packages, setup
 setup(
     name="samutil",
     description="A set of Python utility packages for developing and maintaining quality software.",
-    version="0.0.71",
+    version="0.0.72",
     packages=find_packages(),
     install_requires=["click", "sigfig", "sortedcontainers"],
     python_requires=">=3",
     include_package_data=True,
-    py_modules=["cli"],
+    py_modules=["cli", "samutil.testing", "samutil.generation", "samutil.formatter"],
     entry_points="""
         [console_scripts]
         samutil = samutil.cli:main

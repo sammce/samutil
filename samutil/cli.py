@@ -15,7 +15,7 @@ def main():
 
 
 @main.command()
-@click.argument("filenames", type=click.Path(exists=True), nargs=-1)
+@click.argument("filenames", type=click.Path(), nargs=-1, required=False)
 def test(filenames: tuple[click.Path]):
 
     if len(filenames) == 0:
@@ -23,7 +23,6 @@ def test(filenames: tuple[click.Path]):
     else:
         for file in filenames:
             filename = click.format_filename(file)
-
             if path.isdir(filename):
                 test_dir(filename, search=False)
             elif path.isfile(filename) and filename.endswith(".py"):
@@ -35,7 +34,7 @@ def test(filenames: tuple[click.Path]):
                 click.echo(
                     f.warning(
                         "WARNING: Skipping",
-                        str(file),
+                        f.underline(f.bold(str(file))),
                         "as it is not a directory or valid test file.",
                     )
                 )
@@ -57,5 +56,5 @@ def key(length: int = 6, amount: int = 1, out: click.Path = None):
         print("\n" + "\n".join(tokens) + "\n")
 
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()

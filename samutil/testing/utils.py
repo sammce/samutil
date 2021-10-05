@@ -89,7 +89,7 @@ def test_file(filename: str, search: bool):
 def test_test_file(filename: str):
     with open(filename) as f:
         code = compile(f.read().replace("samutil.", ""), filename, "exec")
-        exec(code, globals(), locals())
+        exec(code)
 
 
 def test_dir(dir: Path, search: bool):
