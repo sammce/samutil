@@ -57,7 +57,7 @@ def import_file(filename: str, search: bool) -> ModuleType:
         spec.loader.exec_module(mod)
     except Exception as e:
         if not search:
-            print(f.error(f"Got error: '{e}' when executing 'filename', skipping..."))
+            print(f.error(f"Got error: '{e}' when executing '{filename}', skipping..."))
         return
 
     return mod
@@ -88,17 +88,19 @@ def test_file(filename: str, search: bool):
 
 def test_test_file(filename: str):
     with open(filename) as f:
-        code = compile(f.read().replace("samutil.", ""), filename, "exec")
+        code = compile(f.read(), filename, "exec")
         exec(code)
 
 
 def test_dir(dir: Path, search: bool):
+    ignore_dirs = ["__pycache__", "venv", "env", "virtualenv", "build", "dist"]
     dirname = click.format_filename(dir)
     for file in os.listdir(dirname):
         filename = os.path.join(dirname, file)
 
         if os.path.isdir(filename):
-            test_dir(filename, search=search)
+            if filename not in ignore_dirs:
+                test_dir(filename, search=search)
         elif os.path.isfile(filename):
             if filename.endswith(".py"):
                 if filename.endswith(".test.py"):

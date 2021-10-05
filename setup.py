@@ -4,11 +4,12 @@ setup(
     name="samutil",
     description="A set of Python utility packages for developing and maintaining quality software.",
     version="0.0.72",
-    packages=find_packages(),
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
     install_requires=["click", "sigfig", "sortedcontainers"],
     python_requires=">=3",
     include_package_data=True,
-    py_modules=["cli", "samutil.testing", "samutil.generation", "samutil.formatter"],
+    py_modules=["cli"],
     entry_points="""
         [console_scripts]
         samutil = samutil.cli:main

@@ -1,4 +1,5 @@
 import inspect
+from types import FunctionType
 from typing import Callable
 
 from samutil.formatting import Formatter as f
@@ -82,6 +83,8 @@ def test(*args):
     def deco(func: Callable):
         try:
             name = args[0]
+            if isinstance(name, FunctionType):
+                name = func.__name__
         except IndexError:
             name = func.__name__
 
@@ -123,7 +126,10 @@ def test(*args):
 
         return func
 
-    return deco
+    if isinstance(args[0], FunctionType):
+        return deco(args[0])
+    else:
+        return deco
 
 
 def testmethod(*args):

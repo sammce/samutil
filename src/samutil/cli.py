@@ -14,24 +14,25 @@ def main():
     pass
 
 
-@main.command()
-@click.argument("filenames", type=click.Path(), nargs=-1, required=False)
+@main.command("test")
+@click.argument("filenames", nargs=-1)
 def test(filenames: tuple[click.Path]):
-
     if len(filenames) == 0:
         test_dir(getcwd(), search=True)
     else:
         for file in filenames:
             filename = click.format_filename(file)
+            ignore_dirs = ["__pycache__", "venv", "env", "virtualenv", "build", "dist"]
             if path.isdir(filename):
-                test_dir(filename, search=False)
+                if filename not in ignore_dirs:
+                    test_dir(filename, search=False)
             elif path.isfile(filename) and filename.endswith(".py"):
                 if filename.endswith(".test.py"):
                     test_test_file(filename)
                 else:
                     test_file(filename, search=False)
             else:
-                click.echo(
+                print(
                     f.warning(
                         "WARNING: Skipping",
                         f.underline(f.bold(str(file))),
@@ -40,18 +41,19 @@ def test(filenames: tuple[click.Path]):
                 )
 
 
-@main.command()
+@main.command("key")
 @click.option("-l", "--length", type=int, default=6)
 @click.option("-a", "--amount", type=int, default=1)
-@click.option("-o", "--out", type=click.Path("w+"), default=None)
+@click.option("-o", "--out", type=str, default=None)
 def key(length: int = 6, amount: int = 1, out: click.Path = None):
     tokens = []
     for _ in range(amount):
         tokens.append(generate_key(length))
 
     if out:
-        out.write("\n".join(tokens))
-        print(f.success("Wrote tokens to", f.bold(out)))
+        with open(out, "w+") as o:
+            o.write("\n".join(tokens))
+            print(f.success("Wrote tokens to", f.bold(out)))
     else:
         print("\n" + "\n".join(tokens) + "\n")
 
