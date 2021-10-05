@@ -28,14 +28,19 @@ class UnitTest:
 
         self._test_subject._name = name
 
-    def describe(self, testname: str):
+    def describe(self, testname: str, output: bool = True):
         self._test_subject._name = testname
+        if output:
+            self.output_test_name()
+
+    def output_test_name(self):
+        print("\n" + f.underline(self._test_subject._name + "\n"))
 
     def value(self):
         """
         Create a new test case using the value passed to `UnitTest` when it was instantiated.
         """
-        print("\n" + f.underline(self._test_subject._name + "\n"))
+        
         return ComparisonRunner(self._test_subject)
 
     def with_args(self, *args, **kwargs):

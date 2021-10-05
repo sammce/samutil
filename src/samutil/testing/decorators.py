@@ -96,7 +96,7 @@ def test(*args):
             )
 
         test = UnitTest(func)
-        test.describe(name)
+        test.describe(name, output=False)
 
         # Used for grouping like tests together
         if not hasattr(func, "_test_index"):
@@ -119,6 +119,7 @@ def test(*args):
             )
 
         def run_tests(fn):
+            test.output_test_name()
             for case in fn._tests[this_suite][::-1]:
                 case(test)()
 
