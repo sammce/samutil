@@ -40,7 +40,7 @@ class UnitTest:
         """
         Create a new test case using the value passed to `UnitTest` when it was instantiated.
         """
-        
+
         return ComparisonRunner(self._test_subject)
 
     def with_args(self, *args, **kwargs):
@@ -48,7 +48,6 @@ class UnitTest:
         Create a new test case, which calls the callable passed to the `UnitTest` when
         it was instantiated using the the args passed to this method.
         """
-        print("\n" + f.underline(self._test_subject._name + "\n"))
         return ComparisonRunner(self._test_subject, *args, **kwargs)
 
     def __call__(self, *args, **kwargs):
@@ -63,11 +62,9 @@ class UnitTest:
         Run a test using the return value of the __str__ method defined on the
         test subject.
         """
-        print("\n" + f.underline(self._test_subject._name + "\n"))
         return ComparisonRunner(str(self._test_subject))
 
     def type(self):
-        print("\n" + f.underline(self._test_subject._name + "\n"))
         return ComparisonRunner(type(self._test_subject))
 
     def method(self, methodname: str):
