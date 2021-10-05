@@ -1,6 +1,6 @@
 from time import perf_counter
 
-from samutil.formatting import Formatter as f
+from formatting import Formatter as f
 from sigfig import round
 
 from .types import TestSubject, Value

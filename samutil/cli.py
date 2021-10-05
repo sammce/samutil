@@ -1,11 +1,10 @@
-from os import path
+from os import getcwd, path
 
 import click
-from click.types import Path
 
-from samutil.formatting import Formatter as f
-from samutil.generation.core import generate_key
-from samutil.testing.utils import test_dir, test_file, test_test_file
+from formatting import Formatter as f
+from generation.core import generate_key
+from testing.utils import test_dir, test_file, test_test_file
 
 
 @click.group()
@@ -17,20 +16,22 @@ def main():
 
 @main.command()
 @click.argument("filenames", type=click.Path(exists=True), nargs=-1, required=False)
-def test(filenames: tuple[Path]):
+@click.pass_context
+def test(ctx: click.Context, filenames: tuple[click.Path]):
+
     if len(filenames) == 0:
-        test_dir(".")
+        test_dir("./", search=True)
     else:
         for file in filenames:
             filename = click.format_filename(file)
 
             if path.isdir(filename):
-                test_dir(filename)
+                test_dir(filename, search=False)
             elif path.isfile(filename) and filename.endswith(".py"):
                 if filename.endswith(".test.py"):
                     test_test_file(filename)
                 else:
-                    test_file(filename)
+                    test_file(filename, search=False)
             else:
                 click.echo(
                     f.info(

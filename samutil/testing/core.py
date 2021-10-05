@@ -1,4 +1,4 @@
-from samutil.formatting import Formatter as f
+from formatting import Formatter as f
 
 from .comparisons import ComparisonRunner
 from .types import TestSubject

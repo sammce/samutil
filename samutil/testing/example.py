@@ -1,4 +1,4 @@
-from samutil.testing import UnitTest
+from testing import UnitTest
 
 
 def add(a, b):
