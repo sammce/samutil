@@ -8,7 +8,7 @@ from .testing.utils import test_dir, test_file, test_test_file
 
 
 @click.group("samutil")
-@click.version_option("0.0.71")
+@click.version_option("0.0.75")
 def main():
     """Samutil Python CLI"""
     pass
