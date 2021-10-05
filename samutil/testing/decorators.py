@@ -1,7 +1,7 @@
 import inspect
 from typing import Callable
 
-from formatting import Formatter as f
+from samutil.formatting import Formatter as f
 
 from .comparisons import BaseComparison, EqualTo
 from .core import UnitTest

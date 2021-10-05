@@ -1,7 +1,5 @@
 from samutil.testing.decorators import case, expect, test
 
-print("Rans")
-
 
 @test("Adds properly")
 @case(10, 4)

@@ -1,12 +1,11 @@
 import importlib.util
 import os
-from importlib import import_module
-from types import CodeType, FunctionType, ModuleType
+from types import FunctionType, ModuleType
 from typing import Callable, Tuple
 
 import click
 from click.types import Path
-from formatting import Formatter as f
+from samutil.formatting import Formatter as f
 
 from .types import TestSubject, Value
 
@@ -40,7 +39,7 @@ def output_case_args(test_subject: TestSubject, *args, **kwargs):
 def lazy_run_test(test, *args, comparison, **kwargs) -> Callable:
     case = test.with_args(*args, **kwargs)
 
-    return lambda: case.should(comparison)
+    return lambda: case.should_be(comparison)
 
 
 def make_lazy_run_test(*args, comparison, **kwargs):
@@ -51,34 +50,17 @@ def import_file(filename: str, search: bool) -> ModuleType:
     """
     Import the contents of a file and return it as a module
     """
-    # filename = filename.replace(".py", "")
-    # split_path = os.path.split(filename)
 
     spec = importlib.util.spec_from_file_location("mod", filename)
     mod = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(mod)
+    except Exception as e:
+        if not search:
+            print(f.error(f"Got error: '{e}' when executing 'filename', skipping..."))
+        return
 
-    return spec.loader.load_module(mod)
-
-    # try:
-    #     if split_path[0] == ".":
-    #         non_test_module = import_module(".add", ".")
-    #     else:
-    #         if filename.startswith("./"):
-    #             filename = filename[2:]
-    #         filename = filename.replace("/", ".")
-
-    #         non_test_module = import_module(".add", ".")
-
-    # except ModuleNotFoundError:
-    #     # if not search:
-    #     print(
-    #         "Skipping",
-    #         filename,
-    #         "as it is not a module. To make it a module, add a __init__.py file to the directory its held in.",
-    #     )
-    #     return None
-
-    # return non_test_module
+    return mod
 
 
 def module_funcs(module: ModuleType):
