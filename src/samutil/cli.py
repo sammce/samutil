@@ -7,7 +7,7 @@ from .generation.core import generate_key
 from .testing.utils import test_dir, test_file, test_test_file
 
 
-@click.group()
+@click.group("samutil")
 @click.version_option("0.0.71")
 def main():
     """Samutil Python CLI"""
@@ -15,11 +15,14 @@ def main():
 
 
 @main.command("test")
-@click.argument("filenames", nargs=-1)
+@click.argument("filenames", nargs=-1, required=False)
 def test(filenames: tuple[click.Path]):
     if len(filenames) == 0:
         test_dir(getcwd(), search=True)
     else:
+        if filenames[0] == ".":
+            print(f.error("To test an entire directory, use '*'"))
+            return
         for file in filenames:
             filename = click.format_filename(file)
             ignore_dirs = ["__pycache__", "venv", "env", "virtualenv", "build", "dist"]

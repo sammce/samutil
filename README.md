@@ -184,7 +184,7 @@ class ClassToBeTested:
     return a + b
 
   @staticmethod
-  def sub(a, b):
+  def **sub**(a, b):
     return a - b
 ```
 A separate decorator is used for testing class methods, as a method cannot be detected by the current file importing implementation (i.e. the decorator calls have to be at the top level)

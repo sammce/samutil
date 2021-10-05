@@ -82,10 +82,10 @@ def test(*args):
 
     def deco(func: Callable):
         try:
-            name = args[0]
+            name = str(args[0])
             if isinstance(name, FunctionType):
                 name = func.__name__
-        except IndexError:
+        except (IndexError, ValueError):
             name = func.__name__
 
         if hasattr(func, "_is_class") and func._is_class:
