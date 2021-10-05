@@ -8,7 +8,7 @@ from .testing.utils import test_dir, test_file, test_test_file
 
 
 @click.group()
-@click.version_option("0.0.69")
+@click.version_option("0.0.71")
 def main():
     """Samutil Python CLI"""
     pass
@@ -17,7 +17,6 @@ def main():
 @main.command()
 @click.argument("filenames", type=click.Path(exists=True), nargs=-1, required=False)
 def test(filenames: tuple[click.Path]):
-
     if len(filenames) == 0:
         test_dir(getcwd(), search=True)
     else:
