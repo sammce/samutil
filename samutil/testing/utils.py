@@ -1,3 +1,4 @@
+import importlib.util
 import os
 from importlib import import_module
 from types import CodeType, FunctionType, ModuleType
@@ -50,29 +51,34 @@ def import_file(filename: str, search: bool) -> ModuleType:
     """
     Import the contents of a file and return it as a module
     """
-    filename = filename.replace(".py", "")
-    split_path = os.path.split(filename)
+    # filename = filename.replace(".py", "")
+    # split_path = os.path.split(filename)
 
-    try:
-        if split_path[0] == ".":
-            non_test_module = import_module(".add", ".")
-        else:
-            if filename.startswith("./"):
-                filename = filename[2:]
-            filename = filename.replace("/", ".")
+    spec = importlib.util.spec_from_file_location("mod", filename)
+    mod = importlib.util.module_from_spec(spec)
 
-            non_test_module = import_module(".add", ".")
+    return spec.loader.load_module(mod)
 
-    except ModuleNotFoundError:
-        # if not search:
-        print(
-            "Skipping",
-            filename,
-            "as it is not a module. To make it a module, add a __init__.py file to the directory its held in.",
-        )
-        return None
+    # try:
+    #     if split_path[0] == ".":
+    #         non_test_module = import_module(".add", ".")
+    #     else:
+    #         if filename.startswith("./"):
+    #             filename = filename[2:]
+    #         filename = filename.replace("/", ".")
 
-    return non_test_module
+    #         non_test_module = import_module(".add", ".")
+
+    # except ModuleNotFoundError:
+    #     # if not search:
+    #     print(
+    #         "Skipping",
+    #         filename,
+    #         "as it is not a module. To make it a module, add a __init__.py file to the directory its held in.",
+    #     )
+    #     return None
+
+    # return non_test_module
 
 
 def module_funcs(module: ModuleType):
