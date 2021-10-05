@@ -17,6 +17,7 @@ def main():
 @main.command()
 @click.argument("filenames", type=click.Path(exists=True), nargs=-1)
 def test(filenames: tuple[click.Path]):
+
     if len(filenames) == 0:
         test_dir(getcwd(), search=True)
     else:
