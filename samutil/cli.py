@@ -15,7 +15,7 @@ def main():
 
 
 @main.command()
-@click.argument("filenames", type=click.Path(exists=True), nargs=-1, required=False)
+@click.argument("filenames", type=click.Path(exists=True), nargs=-1)
 def test(filenames: tuple[click.Path]):
     if len(filenames) == 0:
         test_dir(getcwd(), search=True)
@@ -56,5 +56,5 @@ def key(length: int = 6, amount: int = 1, out: click.Path = None):
         print("\n" + "\n".join(tokens) + "\n")
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()

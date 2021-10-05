@@ -7,8 +7,12 @@ setup(
     packages=find_packages(),
     install_requires=["click", "sigfig", "sortedcontainers"],
     python_requires=">=3",
-    entry_points={"console_scripts": "samutil=samutil.cli:main"},
-    # py_modules=["cli"],
+    include_package_data=True,
+    py_modules=["cli"],
+    entry_points="""
+        [console_scripts]
+        samutil = samutil.cli:main
+    """,
     author="Sam McElligott",
     keyword="testing, unittesting, formatting, secure, generation, utility",
     long_description="README.md",
