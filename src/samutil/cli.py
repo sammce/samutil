@@ -18,7 +18,7 @@ def main():
 @click.argument("filenames", nargs=-1, required=False)
 def test(filenames: tuple[click.Path]):
     if len(filenames) == 0:
-        test_dir(getcwd(), search=True)
+        test_dir(".", search=True)
     else:
         if filenames[0] == ".":
             print(f.error("To test an entire directory, use '*'"))

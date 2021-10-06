@@ -163,7 +163,8 @@ def testmethod(*args):
             method = getattr(func, methodname)
             method.__dict__.update(func.__dict__)
             method._parent = func
-            test = UnitTest(method, testname)
+            test = UnitTest(method)
+            test.describe(testname, output=False)
 
         this_suite = 0
 

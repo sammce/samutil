@@ -69,9 +69,7 @@ test.describe("Adds 2 integers correctly")
 test(1, 6).should_equal(7)
 test(10, b=4).should_equal(14)
 
-test = UnitTest(add)
 test.describe("Doesn't return a crazy value")
-
 test(10, 20).should_be_less_than(100)
 # Or, if you want to manually set a comparison
 test(10, 20).should_be(LessThan(100))
